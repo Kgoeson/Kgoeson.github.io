@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "Hello 2019"
-subtitle:   " \"Hello World, Hello Blog\""
+title:      "Hello world"
+subtitle:   " \"Hello my Blog\""
 date:       2019-08-01 14:00:00
 author:     "chenjing"
 header-img: "img/post-bg-2015.jpg"
