@@ -5,8 +5,8 @@
     <description>记录 | 陈晶，Web &amp; Mobile Lover，Algrithm Engineer | 这里是 @chenjing 的个人博客，与你一起发现更大的世界。</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 04 Aug 2019 18:58:26 +0800</pubDate>
-    <lastBuildDate>Sun, 04 Aug 2019 18:58:26 +0800</lastBuildDate>
+    <pubDate>Sun, 04 Aug 2019 19:08:26 +0800</pubDate>
+    <lastBuildDate>Sun, 04 Aug 2019 19:08:26 +0800</lastBuildDate>
     <generator>Jekyll v3.8.6</generator>
     
       <item>
@@ -19,7 +19,7 @@
 
 &lt;p&gt;我是在4月初入坑自然语言处理的，并在4月初到6月初的2个月时间里面学习了斯坦福的自然语言处理课程。接下来我会大致介绍一下这门课程，讲讲每节课的大纲，以及我觉得缺少的东西。&lt;/p&gt;
 
-&lt;p&gt;首先给出课程的&lt;a href=&quot;http://web.stanford.edu/class/cs224n/&quot;&gt;官方网站&lt;/a&gt;，所有的课程资料都可以在这个网页上下载，包括：课程ppt、作业说明文档、手册、部分笔记等。配套的网络课程在&lt;a href=&quot;https://www.bilibili.com/video/av46065585?from=search&amp;amp;seid=12274272452479951197&quot;&gt;这里&lt;/a&gt;，如果你希望系统地学习 NLP，那么这门课程是你的首选。(6月下旬斯坦福又开放了一门课程 CS224u 自然语言处理，我会另开一个系列介绍)&lt;/p&gt;
+&lt;p&gt;首先给出课程的&lt;a href=&quot;http://web.stanford.edu/class/cs224n/&quot;&gt;官方网站&lt;/a&gt;，所有的课程资料都可以在这个网页上下载，包括：课程ppt、作业说明文档、手册、部分笔记等。配套的网络课程在&lt;a href=&quot;https://www.bilibili.com/video/av46065585?from=search&amp;amp;seid=12274272452479951197&quot;&gt;这里&lt;/a&gt;，如果你希望系统地学习 NLP，那么这门课程是你的首选。(6月下旬斯坦福又开放了一门课程 CS224u 自然语言理解，我会另开一个系列介绍)&lt;/p&gt;
 
 &lt;hr /&gt;
 
