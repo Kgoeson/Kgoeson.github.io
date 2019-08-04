@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="记录 | 陈晶，Web & Mobile Lover，Algrithm Engineer | 这里是 @chenjing 的个人博客，与你一起发现更大的世界。">
+    <meta name="keywords"  content="陈晶, @Kgoeson, Hux Blog, 博客, 个人网站, 互联网, 机器学习, 深度学习, 自然语言处理">
+    <meta name="theme-color" content="#000000">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Stanford CS224n 自然语言处理（一） - 陈晶的博客 | CJ Blog">
+    
+    <meta property="og:type" content="article">
+    <meta property="og:description" content="
+  Begining
+
+
+">
+    
+    <meta property="article:published_time" content="2019-08-04T23:04:00Z">
+    
+    
+    <meta property="article:author" content="chenjing">
+    
+    
+    <meta property="article:tag" content="NLP">
+    
+    <meta property="article:tag" content="Stanford">
+    
+    
+    <meta property="og:image" content="http://localhost:4000/img/cj-selfie.jpeg">
+    <meta property="og:url" content="http://localhost:4000/2019/08/04/Stanford-CS224n-nlp-01/">
+    <meta property="og:site_name" content="陈晶的博客 | CJ Blog">
+    
+    <title>Stanford CS224n 自然语言处理（一） - 陈晶的博客 | CJ Blog</title>
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/pwa/manifest.json">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="http://localhost:4000/2019/08/04/Stanford-CS224n-nlp-01/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ChenJing's Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    
+                    
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    
+                    
+                    <li>
+                        <a href="/archive/">Archive</a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+                    <li>
+                        <a href="/portfolio/">Portfolio</a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-unix-linux.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+
+
+
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/post-bg-unix-linux.jpg');
+        background: ;
+    }
+
+    
+</style>
+
+<header class="intro-header" >
+
+    <div class="header-mask"></div>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/archive/?tag=NLP" title="NLP">NLP</a>
+                        
+                        <a class="tag" href="/archive/?tag=Stanford" title="Stanford">Stanford</a>
+                        
+                    </div>
+                    <h1>Stanford CS224n 自然语言处理（一）</h1>
+                    
+                    <h2 class="subheading"></h2>
+                    <span class="meta">Posted by chenjing on August 4, 2019</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <!-- Multi-Lingual -->
+                
+
+				<blockquote>
+  <p>Begining</p>
+</blockquote>
+
+<h2 id="前言">前言</h2>
+
+<p>我是在4月初入坑自然语言处理的，并在4月初到6月初的2个月时间里面学习了斯坦福的自然语言处理课程。接下来我会大致介绍一下这门课程，讲讲每节课的大纲，以及我觉得缺少的东西。</p>
+
+<p>首先给出课程的<a href="http://web.stanford.edu/class/cs224n/">官方网站</a>，所有的课程资料都可以在这个网页上下载，包括：课程ppt、作业说明文档、手册、部分笔记等。配套的网络课程在<a href="https://www.bilibili.com/video/av46065585?from=search&amp;seid=12274272452479951197">这里</a>，如果你希望系统地学习 NLP，那么这门课程是你的首选。(6月下旬斯坦福又开放了一门课程 CS224u 自然语言处理，我会另开一个系列介绍)</p>
+
+<hr />
+
+<h2 id="课程大纲">课程大纲</h2>
+
+<h4 id="lecture-1--introduction-and-word-vectors">Lecture 1 : Introduction and Word Vectors</h4>
+
+<p>首先介绍了课程的教授者，课程资料以及作业的评分细则，然后列出了和2017年的 CS2224n 课程的不同点：</p>
+
+<ul>
+  <li>
+    <p>课程涵盖新的模型和方法，如，字符级模型( Character Model )、Transformer、多任务学习( Multitask Learning )</p>
+  </li>
+  <li>作业涵盖了新内容，如，NMT with attention、卷积网络( ConvNets )、子词模型( subword model )</li>
+  <li>使用 PyTorch 而不是 TensorFlow</li>
+</ul>
+
+<p>接着介绍了自然语言以及词义；词向量、word2vec 概览；目标函数梯度的计算以及梯度下降算法。</p>
+
+<h4 id="lecture-2--word-vectors-and-word-senses">Lecture 2 : Word Vectors and Word Senses</h4>
+
+<ol>
+  <li>实现 word2vec 的两种模型
+    <ul>
+      <li>Skip-grams (SG)</li>
+      <li>Continuous Bag of Words (CBOW)</li>
+    </ul>
+  </li>
+  <li>训练技巧
+    <ul>
+      <li>负采样 (Negative sampling)</li>
+      <li>Hierarchical softmax</li>
+    </ul>
+  </li>
+  <li>共现矩阵( co-occurrence matrix )，以及降维方法( SVD )</li>
+  <li>GloVe</li>
+  <li>词向量的评价指标</li>
+  <li>词义：歧义( word sense ambiguity )、一词多义( polysemy )等</li>
+</ol>
+
+<h4 id="lecture-3--word-window-classification-neural-networks-and-matrix-calculus">Lecture 3 : Word Window Classification, Neural Networks and Matrix Calculus</h4>
+
+<ol>
+  <li>分类问题概览</li>
+  <li>神经网络简介</li>
+  <li>命名实体识别( Named Entity Recognition )</li>
+  <li>词窗口</li>
+  <li>矩阵求导</li>
+</ol>
+
+<h4 id="lecture-4--backpropagation-and-computation-graphs">Lecture 4 : Backpropagation and computation graphs</h4>
+
+<ol>
+  <li>推导矩阵反向传播的梯度</li>
+  <li>计算图( computation graphs )</li>
+  <li>神经网络的一些需要知道的问题：
+    <ul>
+      <li>向量化表达( Vectorization ) / 矩阵化表达( Matrixization )的计算速度优势</li>
+      <li>过拟合( overfitting )</li>
+      <li>非线性( nonlinearities )</li>
+      <li>初始化( initialization )</li>
+      <li>优化器( optimizers )</li>
+      <li>学习率( learning rates )</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="lecture-5--dependency-parsing">Lecture 5 : Dependency Parsing</h4>
+
+<ol>
+  <li>两种句法结构：
+    <ul>
+      <li>一致性( Consistency ) ，即短语结构语法，也即无上下文语法( context-free grammars )，18课会单独讲</li>
+      <li>依存性( Dependency )，即依存结构</li>
+    </ul>
+  </li>
+  <li>依存语法和依存结构</li>
+  <li>依存关系解析( Dependency Parsing )
+    <ul>
+      <li>基于转换的解析( transition-based )</li>
+      <li>基于神经网络的解析( nueral )</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="lecture-6--language-models-and-recurrent-neural-networks">Lecture 6 : Language Models and Recurrent Neural Networks</h4>
+
+<ol>
+  <li>语言模型简介</li>
+  <li>n-gram 语言模型</li>
+  <li>神经网络（RNN）语言模型</li>
+  <li>评估语言模型</li>
+</ol>
+
+<h4 id="lecture-7--vanishing-gradients-and-fancy-rnns">Lecture 7 : Vanishing Gradients and Fancy RNNs</h4>
+
+<ol>
+  <li>梯度消失问题和梯度爆炸问题及其解决方法</li>
+  <li>LSTM （ Long Short-Term Memory ）</li>
+  <li>GRU（ Gated Recurrent Unit ）</li>
+  <li>RNN variant：
+    <ul>
+      <li>Bidirectional RNN</li>
+      <li>Multi-layer RNN</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="lecture-8--machine-translation-sequence-to-sequence-and-attention">Lecture 8 : Machine Translation, Sequence-to-sequence and Attention</h4>
+
+<ol>
+  <li>统计机器翻译（ SMT ）
+    <ul>
+      <li>对齐（alignment）</li>
+      <li>解码（decodeing）</li>
+    </ul>
+  </li>
+  <li>神经机器翻译（ NMT ）
+    <ul>
+      <li>seq2seq</li>
+      <li>beam search decoding</li>
+    </ul>
+  </li>
+  <li>Attention 机制</li>
+</ol>
+
+<h4 id="lecture-9--practical-tips-for-final-projects">Lecture 9 : Practical Tips for Final Projects</h4>
+
+<ol>
+  <li>最终项目的一些建议</li>
+  <li>回顾 GRU、LSTM</li>
+  <li>机器翻译的评价指标：BLEU</li>
+</ol>
+
+<h4 id="lecture-10--textual-question-answering">Lecture 10 : (Textual) Question Answering</h4>
+
+<ol>
+  <li>QA —&gt;机器阅读理解</li>
+  <li>SQuAD 数据集</li>
+  <li>斯坦福 Attentive Reader</li>
+  <li>BiDAF</li>
+  <li>一些先进的模型：Co-attention、FusionNet 等</li>
+  <li>ELMo 和 BERT 概览</li>
+</ol>
+
+<h4 id="lecture-11--convnets-for-nlp">Lecture 11 : ConvNets for NLP</h4>
+
+<ol>
+  <li>从 RNN 到 CNN</li>
+  <li>模型比较</li>
+</ol>
+
+<h4 id="lecture-12--information-from-parts-of-words--subword-models">Lecture 12 : Information from parts of words : Subword Models</h4>
+
+<ol>
+  <li>语言学概览
+    <ul>
+      <li>发音（Phonetics）</li>
+      <li>音韵（Phonology）</li>
+      <li>词的形态（Morphology）</li>
+      <li>书写系统</li>
+    </ul>
+  </li>
+  <li>字符级的模型</li>
+  <li>子词模型
+    <ul>
+      <li>Byte Pair Encoding</li>
+      <li>Wordpiece</li>
+      <li>Sentencepiece</li>
+    </ul>
+  </li>
+  <li>混合神经网络翻译</li>
+  <li>fastText</li>
+</ol>
+
+<h4 id="lecture-13--contextual-word-representations-and-pretraining">Lecture 13 : Contextual Word Representations and Pretraining</h4>
+
+<ol>
+  <li>词表示</li>
+  <li>pre-ELMo &amp; EMLo</li>
+  <li>ULMfit</li>
+  <li>Transformer 架构
+    <ul>
+      <li>self-attention</li>
+    </ul>
+  </li>
+  <li>BERT</li>
+</ol>
+
+<h4 id="lecture-14--self-attention-for-generative-models">Lecture 14 : Self-Attention for Generative Models</h4>
+
+<ol>
+  <li>Self-Attention</li>
+  <li>文本生成</li>
+  <li>图像生成</li>
+  <li>音乐生成</li>
+</ol>
+
+<h4 id="lecture-15--natural-language-generation">Lecture 15 : Natural Language Generation</h4>
+
+<ol>
+  <li>回顾语言模型和解码算法及技巧
+    <ul>
+      <li>Greedy decoding</li>
+      <li>Beam search</li>
+      <li>Sampling methods</li>
+      <li>Softmax temperature</li>
+    </ul>
+  </li>
+  <li>自然语言生成（NLG）任务以及神经网络方法
+    <ul>
+      <li>文本总结</li>
+      <li>对话系统</li>
+      <li>创意写作</li>
+    </ul>
+  </li>
+  <li>NLG 的评估</li>
+  <li>NLG 的趋势和发展</li>
+</ol>
+
+<h4 id="lecture-16--coreference-resolution">Lecture 16 : Coreference Resolution</h4>
+
+<ol>
+  <li>共指解析及其应用</li>
+  <li>提及检测（Mention Detection）</li>
+  <li>一些语言学概念
+    <ul>
+      <li>anaphora</li>
+      <li>cataphora</li>
+    </ul>
+  </li>
+  <li>共指模型
+    <ul>
+      <li>Rule-based Model</li>
+      <li>Mention Pair Model</li>
+      <li>Mention Ranking Model</li>
+      <li>Mention Clustering Model</li>
+    </ul>
+  </li>
+  <li>评估指标</li>
+</ol>
+
+<h4 id="lecture-17--multitask-learning-as-qa">Lecture 17 : Multitask Learning as QA</h4>
+
+<p>这节课相当于一个讲座，介绍了多任务学习的若干模型、训练策略，以及多任务学习的优势</p>
+
+<h4 id="lecture-18--tree-recursive-neural-networks-constituency-parsing-and-sentiment">Lecture 18 : Tree Recursive Neural Networks, Constituency Parsing, and Sentiment</h4>
+
+<ol>
+  <li>递归神经网络（Recursive Neural Networks）</li>
+  <li>短语句法解析</li>
+  <li>树递归神经网络（TreeRNN）</li>
+</ol>
+
+<h4 id="lecture-19--bias-in-the-vision-and-language-of-artificial-intelligence">Lecture 19 : Bias in the Vision and Language of Artificial Intelligence</h4>
+
+<p>讲座，介绍了 AI 的偏见以及多任务学习</p>
+
+<h4 id="lecture-20--the-future-of-deep-learning--nlp">Lecture 20 : The Future of Deep Learning + NLP</h4>
+
+<p>讲座，介绍了大规模深度学习在各个领域取得的成功，无标签数据集，无监督机器翻译，大模型（如 BERT、GPT-2），多任务学习，更加难的自然语言理解，NLP 在工业上的应用，以及未来的挑战。</p>
+
+<hr />
+
+<h2 id="后记">后记</h2>
+
+<p>以上就是Stanford CS224n 自然语言处理课程的课程概览，我会在今后陆续完成每节课的分析与笔记（如果有时间的话 hhh）。</p>
+
+<p>自然语言处理真的是一门非常庞大的学科，其中包含了很多内容，想要在一门课上学习完所有的内容是不现实的，个人所见，这门课的的意义就在于为刚开始学习自然语言处理的学生做一个相对详细的 review ，接下去要做什么方向，按照自己的兴趣来。</p>
+
+<p>在前言中我提到过，这门课程还有许多没有讲到的地方，比如分词方法、TF-IDF、关系提取、情感分析等，如果对这些感兴趣的话，Stanford 为大家又提供了一门课程（<a href="http://web.stanford.edu/class/cs224u/">CS224u 自然语言理解</a>），感谢斯坦福。</p>
+
+<p>写这些文章的初衷是为了对抗遗忘，所以某种程度上是给自己温故用的。所以不会把课上的内容完完整整全部记录下来，如果有什么疑问，欢迎指出。</p>
+
+<p><strong>PS</strong> ：博客的评论区还没有调试成功，如果我的文章有什么错误，烦请点击下面的微博按钮，私信给我，不胜感激。</p>
+
+<hr />
+
+
+
+                <hr style="visibility: hidden;">
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2019/08/03/Hello-World/" data-toggle="tooltip" data-placement="top" title="Hello World">
+                        Previous<br>
+                        <span>Hello World</span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+                <hr style="visibility: hidden;">
+
+                
+
+                
+            </div>  
+
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+
+<section>
+    
+        <hr class="hidden-sm hidden-xs">
+    
+    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+    <div class="tags">
+        
+        
+        
+        
+        
+    </div>
+</section>
+
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+<!-- add support for mathjax by voleking-->
+
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <!-- SNS Link -->
+                
+
+
+<ul class="list-inline text-center">
+
+
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://www.zhihu.com/people/陈三天">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa  fa-stack-1x fa-inverse">知</i>
+      </span>
+    </a>
+  </li>
+  
+  
+  <li>
+    <a target="_blank" href="http://weibo.com/Kgoeson">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/Kgoeson">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+
+                <p class="copyright text-muted">
+                    Copyright &copy; ChenJing's Blog 2019
+                    <br>
+                    Powered by <a href="http://huangxuan.me">Hux Blog</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=huxpro&repo=huxpro.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<!-- Currently, only navbar scroll-down effect at desktop still depends on this -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js "></script>
+
+<!-- Service Worker -->
+
+<script src="/js/snackbar.js "></script>
+<script src="/js/sw-registration.js "></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+     - https://github.com/jneen/rouge/wiki/list-of-supported-languages-and-lexers
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+
+
+
+<!--fastClick.js -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-145017913-1';
+    var _gaDomain = 'auto';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+
+        // interop with multilangual 
+        if ('' == 'true') {
+            _containerSelector = 'div.post-container.active'
+        } else {
+            _containerSelector = 'div.post-container'
+        }
+
+        // init
+        var P = $(_containerSelector),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        // clean
+        $(selector).html('')
+
+        // appending
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+<!-- Multi-Lingual -->
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

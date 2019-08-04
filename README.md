@@ -1,4 +1,10 @@
-# Hux Blog
+# 前言
+
+本主页的主题 fork 自 [@Huxpro](https://github.com/Huxpro/huxpro.github.io) 。在此，对大佬表示感谢。
+
+以下，是 @Huxpro 的主题介绍。
+
+## Hux Blog
 
 ### [View Live Hux Blog &rarr;](https://huangxuan.me)
 
