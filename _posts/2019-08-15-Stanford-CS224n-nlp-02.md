@@ -68,7 +68,7 @@ tags:
 
 * 机器翻译
 * 语义分析（例如，“陈述”这个词是什么意思？）
-* 共指（例如，“他”和“它”在文档中分别指代什么？）
+* 共指解析（例如，“他”和“它”在文档中分别指代什么？）
 * 问答系统
 
 # 2 词的表示
@@ -79,7 +79,7 @@ tags:
 
 我们先举个实际例子，大家或许都知道 WorldNet ，他是自然语言处理工具包 NLTK 包含一个同义词集（synonym sets）和上位词（hypernyms）的词库。
 
-> **hypernyms :**  “is a” 的关系。如，Rose is a flower。Flower is a plant。即 ”花” 是 ”玫瑰” 的上位词，”植物” 是 ”花” 的上位词。
+> **hypernyms :**  “is a” 的关系。如，Rose is a flower。Flower is a plant。即 “花” 是 “玫瑰” 的上位词，“植物” 是 “花” 的上位词。
 
 ![](/img/in-post/post-cs224n/worldnet_demo.png)
 
@@ -192,15 +192,15 @@ word2vec 模型实际上分为了两个部分，第一部分为建立模型，�
 
 word2vec 模型主要有 Skip-Gram 和 Continuous Bag-of-Word 两种模型，从直观上理解，Skip-Gram 是给定中心词（center word）来预测上下文词（context word），而 CBOW 是给定上下文词（context word），来预测中心词（center word）。
 
-![](/img/in-post/post-cs224n/CBOW_arc.png)
-
-<center>CBOW 模型</center>
-
-
-
 ![](/img/in-post/post-cs224n/SG_arc.png)
 
 <center>Skip-Gram 模型</center>
+
+
+
+![](/img/in-post/post-cs224n/CBOW_arc.png)
+
+<center>CBOW 模型</center>
 
 ## 3.1 Language Model
 
@@ -230,7 +230,7 @@ $$P\left(w_{1}, w_{2}, \cdots, w_{n}\right)=\prod_{i=2}^{n} P\left(w_{i} | w_{i-
 
 ### 3.2.1 任务介绍
 
-我们在介绍 wordvec 的时候提到，训练模型的真正目的是获得模型基于训练数据学得的隐层权重。为了得到这些权重，我们首先要构建一个完整的神经网络作为我们的“Fake Task”，后面再返回来通过“Fake Task”间接地得到这些词向量。
+我们在介绍 word2vec 的时候提到，训练模型的真正目的是获得模型基于训练数据学得的隐层权重。为了得到这些权重，我们首先要构建一个完整的神经网络作为我们的“Fake Task”，后面再返回来通过“Fake Task”间接地得到这些词向量。
 
 接下来我们来看看如何训练我们的神经网络。假如我们有一个句子： $\text {“The dog barked at the mailman”}$。
 
@@ -242,14 +242,14 @@ $$P\left(w_{1}, w_{2}, \cdots, w_{n}\right)=\prod_{i=2}^{n} P\left(w_{i} | w_{i-
 
 - 神经网络基于这些训练数据将会输出一个概率分布，这个概率代表在给定 input word 的情况下词表中的每个词出现的概率。再用交叉熵损失将这个概率分布与 output word 的 one-hot 向量的误差反向传播。
 
-模型的输出概率代表词表中每个词有多大可能性跟 input word 同时出现。举个栗子，如果我们向神经网络模型中输入一个单词“Soviet“，那么最终模型的输出概率中，像“Union”， ”Russia“这种相关词的概率将远高于像”watermelon“，”kangaroo“非相关词的概率。因为”Union“，”Russia“更有可能在”Soviet“的窗口中出现。
+模型的输出概率代表词表中每个词有多大可能性跟 input word 同时出现。举个栗子，如果我们向神经网络模型中输入一个单词“Soviet”，那么最终模型的输出概率中，像“Union”， “Russia”这种相关词的概率将远高于像“watermelon”，“kangaroo”非相关词的概率。因为“Union”，“Russia”更有可能在“Soviet”的窗口中出现。
 我们将通过给神经网络输入文本中成对的单词来训练它，完成上面所说的概率计算。下面的图中给出了一些我们的训练样本的例子。
 
 假设有句子：$\text{ “The quick brown fox jumps over lazy dog. ”}$ ，设定我们的窗口大小为2（window_size = 2）。下图中，蓝色代表input word，方框内代表位于窗口内的单词。
 
 ![](/img/in-post/post-cs224n/training_data.png)
 
-模型将会从每对单词出现的次数中学习得到统计结果。例如，我们的神经网络可能会得到更多类似（“Soviet“，”Union“）这样的训练样本对，而（”Soviet“，”Sasquatch“）这样的训练样本对却很少。因此，当我们的模型完成训练后，给定一个单词”Soviet“作为输入，输出的结果中”Union“或者”Russia“要比”Sasquatch“的概率大得多。
+模型将会从每对单词出现的次数中学习得到统计结果。例如，我们的神经网络可能会得到更多类似（“Soviet”，“Union”）这样的训练样本对，而（“Soviet”，“Sasquatch”）这样的训练样本对却很少。因此，当我们的模型完成训练后，给定一个单词“Soviet”作为输入，输出的结果中“Union”或者“Russia”要比“Sasquatch”的概率大得多。
 
 ### 3.2.2  任务实施
 
@@ -257,7 +257,7 @@ $$P\left(w_{1}, w_{2}, \cdots, w_{n}\right)=\prod_{i=2}^{n} P\left(w_{i} | w_{i-
 
 我们首先从最简单情形开始，input word 只有一个，即给定一个 input word，预测 output word（有点像 bigram 模型）。假设词表大小为$V$，隐藏层神经元个数为$N$，输入层到隐藏层、隐藏层到输出层都是全连接，样本是（input word，output word）单词对，输入为 input word 的 one-hot 向量。
 
-假设从我们的训练文档中抽取出 10000 个不重复的单词组成词汇表。我们对这 10000 个单词进行 one-hot 编码，得到的每个单词都是一个 10000 维的向量，向量每个维度的值只有 0 或者 1，假如单词 “ants“ 在词汇表中的出现位置为第 3 个，那么 ‘’ants“ 的向量就是一个第三维度取值为 1，其他维都为 0 的 10000 维的向量（$\text {ants}=[0,0,1,0, \ldots, 0]$ ）
+假设从我们的训练文档中抽取出 10000 个不重复的单词组成词汇表。我们对这 10000 个单词进行 one-hot 编码，得到的每个单词都是一个 10000 维的向量，向量每个维度的值只有 0 或者 1，假如单词“ants”在词汇表中的出现位置为第 3 个，那么“ants”的向量就是 $\text {ants}=[0,0,1,0, \ldots, 0]$ 。
 
 模型的输入如果为一个 10000 维的向量，那么输出也是一个 10000 维度（词汇表的大小）的向量，它包含了 10000 个概率，每一个概率代表着给定 input word 词表中的每个词出现在 input word 附近的概率大小。
 
@@ -287,7 +287,7 @@ $$P\left(w_{1}, w_{2}, \cdots, w_{n}\right)=\prod_{i=2}^{n} P\left(w_{i} | w_{i-
 
 ![](/img/in-post/post-cs224n/matrix_mult_w_one_hot.png)
 
-为了有效地进行计算，这种稀疏状态下不会进行矩阵乘法计算，可以看到计算的结果实际上是矩阵的某一行：先根据 input word 的 one-hot 向量中元素 1 的索引，再由这个索引取得矩阵对应的行。上面的例子中，左边向量中取值为 1 的对应维度为 3（下标从0开始），那么计算结果就是矩阵的第 3 行（下标从0开始）—— [10, 12, 19]，这样模型中的隐层权重矩阵便成了一个”查找表“（lookup table），进行矩阵计算时，直接去查输入向量中取值为1的维度下对应的那些权重值。隐层的输出就是每个输入单词的“嵌入词向量”，也称为输入词向量。
+为了有效地进行计算，这种稀疏状态下不会进行矩阵乘法计算，可以看到计算的结果实际上是矩阵的某一行：先根据 input word 的 one-hot 向量中元素 1 的索引，再由这个索引取得矩阵对应的行。上面的例子中，左边向量中取值为 1 的对应维度为 3（下标从0开始），那么计算结果就是矩阵的第 3 行（下标从0开始）—— [10  12  19]，这样模型中的隐层权重矩阵便成了一个“查找表”（lookup table），进行矩阵计算时，直接去查输入向量中取值为1的维度下对应的那些权重值。隐层的输出就是每个输入单词的“嵌入词向量”，也称为输入词向量。
 
 > 上面提到的隐层权重矩阵是从输入层到隐藏层的权重矩阵，称为**输入词向量矩阵**，在接下来的章节中我们还会看到，从隐藏层到输出层的权重矩阵，称为**输出词向量矩阵**。
 
@@ -295,7 +295,7 @@ $$P\left(w_{1}, w_{2}, \cdots, w_{n}\right)=\prod_{i=2}^{n} P\left(w_{i} | w_{i-
 
 经过神经网络隐层的计算，“ants“ 这个词会从一个 1 x 10000 的向量变成 1 x 300 的向量，再被输入到输出层。输出层是一个softmax回归分类器，它的每个结点将会输出一个 0-1 之间的值（概率），这些所有输出层神经元结点的概率之和为1。
 
-下面是一个例子，训练样本为 (input word: “ants”， output word: “car”) 的计算示意图：
+下面是一个例子，训练样本为 (input word: ants， output word: car) 的计算示意图：
 
 ![](/img/in-post/post-cs224n/output_weights_function.png)
 
@@ -303,16 +303,24 @@ $$P\left(w_{1}, w_{2}, \cdots, w_{n}\right)=\prod_{i=2}^{n} P\left(w_{i} | w_{i-
 
 直觉上的理解，如果两个不同的单词有着非常相似的“上下文”（也就是窗口单词很相似，比如“Kitty climbed the tree”和“Cat climbed the tree”），那么通过我们的模型训练，这两个单词的嵌入向量将非常相似。
 
-> 在word2vec 中，规定两个单词的**相似度**就是各自词向量的内积，如，(input word: “ants”， output word: “car”) 的计算结果就是“ants”和“car”的相似度。
+> 在word2vec 中，规定两个单词的**相似度**就是两者词向量的内积，如，上面的例子“ants”和“car”的计算结果就是两者的相似度。
 
-那么两个单词拥有相似的“上下文”到底是什么含义呢？比如对于同义词“intelligent”和“smart”，我们觉得这两个单词应该拥有相同的“上下文”。而例如”engine“和”transmission“这样相关的词语，可能也拥有着相似的上下文。
+那么两个单词拥有相似的“上下文”到底是什么含义呢？比如对于同义词“intelligent”和“smart”，我们觉得这两个单词应该拥有相同的“上下文”。而例如“engine”和“transmission”这样相关的词语，可能也拥有着相似的上下文。
 
-实际上，这种方法实际上也可以帮助你进行词干化（stemming），例如，神经网络对”ant“和”ants”两个单词会习得相似的词向量。
+实际上，这种方法实际上也可以帮助你进行词干化（stemming），例如，神经网络对“ant”和“ants”两个单词会习得相似的词向量。
 
-> 词干化（stemming）就是去除词缀得到词根的过程。
+> 词干化（stemming）就是去除词缀得到词根的过程。如，looks/looked/looking $\to$ look，happier/happiest $\to$ happy 等。
 
 以上便是 word2vec 模型的最简化形式，CBOW 和 Skip-Gram 无非就是对这个模型的推广，到这里，大家应该在直观上理解了这个模型，如若要深究下去（数学推导👀），我会在下一篇文章中具体分析。
 
 # 4 小结
 
 这篇文章从自然语言开始讲起，通过如何表示一个词，讲述了从词的离散表示到稠密表示的发展过程，引入了共现矩阵、词向量、SVD、word2vec 等方法将一个具体的单词（符号）表示成可以喂给任意模型处理的数据。在下一篇文章中，我将介绍 word2vec 的两种具体的模型：CBOW 和 Skip-Gram，以及它们各自的目标函数梯度的计算和梯度下降算法，还有它们的训练方法：负采样 (Negative sampling)和 Hierarchical softmax。
+
+## 参考文献
+
+[Word2Vec Tutorial - The Skip-Gram](http://mccormickml.com/2016/04/19/word2vec-tutorial-the-skip-gram-model/)
+
+[CS224n notes-01](http://web.stanford.edu/class/cs224n/)
+
+---
