@@ -45,7 +45,13 @@ tags:
 
 $$\mathbf{X}=(X_1\ X_2\ \cdots \ X_N)^{\mathrm{T}}=\begin{pmatrix} X_1^{\mathrm{T}}\\ X_2^{\mathrm{T}} \\ \vdots \\ X_N^{\mathrm{T}} \\ \end{pmatrix}\\ = \begin{pmatrix} x_{11} & x_{12} & \cdots &x_{1p}\\ x_{21} & x_{22} & \cdots &x_{2p}\\ \vdots & \vdots & \ddots & \vdots \\ x_{N1}& x_{N2} & \cdots & x_{Np} \\ \end{pmatrix}\\$$ 
 
-其中，$\mathbf{X} \in \mathbb{R}^{ N \times p}$， $X_i \in \mathbb{R}^{ p \times 1}, i = 1,2,\cdots,N$。我们用大写粗体的 $\mathbf{X}$ 表示由 $N$ 个随机变量组成的矩阵，用 大写细体的 $X$ 表示随机变量，用小写细体的 $x$ 表示随机变量的具体取值。
+其中，$\mathbf{X} \in \mathbb{R}^{ N \times p}$， $X_i \in \mathbb{R}^{ p \times 1}, i = 1,2,\cdots,N$。我们用大写粗体的 $\mathbf{X}$ 表示由 $N$ 个随机变量组成的矩阵，用 大写细体的 $X$ 表示随机变量，用小写细体的 $x$ 表示随机变量的具体取值，$x$ 可以是标量或向量，都用相同类型的字母表示，除特别声明外，本书中的向量均为列向量，$x$ 的特征向量记作：
+
+$$(x^{(1)}\ x^{(2)}\ \cdots \ x^{(n)})^{\mathrm{T}}$$
+
+$x^{(i)}$ 表示 $x$ 的第 $i$ 个特征，注意，$x^{(i)}$ 与 $x_i$ 不同，后者表示多个随机变量的第 $i$ 个取值，即，
+
+$$(x_i^{(1)}\ x_i^{(2)}\ \cdots \ x_i^{(n)})^{\mathrm{T}}$$
 
 若 $X$ 服从于一个概率分布，记为 $ X\sim P(X \mid \theta)$，这里我们用大写的 $P(·)$ 表示概率分布，用小写的 $p(·)$ 表示概率密度函数或离散分布律。此处，当 $\theta$ 为参数时， 以下两种表示方式等价： $P(X \mid \theta) \iff P(X;\theta)$ 。今后若不特殊说明，我们都用左侧的表示方式。
 
